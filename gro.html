@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grocery Tracker</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f6f6f6;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+      padding: 8px;
+    }
+    .totals {
+      text-align: right;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .mode-btn {
+      background-color: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛒 Grocery Tracker</h1>
+
+  <div class="container">
+    <button class="mode-btn" onclick="toggleMode()">Switch Mode</button>
+    <p id="modeLabel"><strong>Current Mode:</strong> Planning (Before Market)</p>
+
+    <div id="addSection">
+      <input type="text" id="itemName" placeholder="Item name">
+      <button onclick="addItem()">Add Item</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Actual Price (₹)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="itemList"></tbody>
+    </table>
+
+    <div class="totals">
+      <p id="totalAmount">Total Spent: ₹0</p>
+    </div>
+  </div>
+
+  <script>
+    let mode = "planning"; // "planning" or "shopping"
+    let items = JSON.parse(localStorage.getItem("groceryItems")) || [];
+
+    function renderItems() {
+      const tbody = document.getElementById("itemList");
+      tbody.innerHTML = "";
+      let total = 0;
+
+      items.forEach((item, index) => {
+        total += Number(item.price) || 0;
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>
+            ${
+              mode === "shopping"
+                ? `<input type="number" placeholder="Enter price" value="${item.price || ''}" onchange="updatePrice(${index}, this.value)">`
+                : "-"
+            }
+          </td>
+          <td><button onclick="deleteItem(${index})">❌</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById("totalAmount").textContent = "Total Spent: ₹" + total;
+      localStorage.setItem("groceryItems", JSON.stringify(items));
+    }
+
+    function addItem() {
+      const name = document.getElementById("itemName").value.trim();
+      if (!name) return alert("Please enter an item name!");
+      items.push({ name, price: "" });
+      document.getElementById("itemName").value = "";
+      renderItems();
+    }
+
+    function updatePrice(index, price) {
+      items[index].price = price;
+      renderItems();
+    }
+
+    function deleteItem(index) {
+      items.splice(index, 1);
+      renderItems();
+    }
+
+    function toggleMode() {
+      mode = mode === "planning" ? "shopping" : "planning";
+      document.getElementById("modeLabel").innerHTML = `<strong>Current Mode:</strong> ${mode === "planning" ? "Planning (Before Market)" : "Shopping (At Market)"}`;
+      renderItems();
+    }
+
+    renderItems();
+  </script>
+</body>
+</html>
