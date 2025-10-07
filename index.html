@@ -55,6 +55,21 @@
     .mode-btn {
       background-color: #007bff;
     }
+    .budget-input {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .budget-input input {
+      width: 150px;
+    }
+    .negative {
+      color: red;
+    }
+    .positive {
+      color: green;
+    }
   </style>
 </head>
 <body>
@@ -63,6 +78,11 @@
   <div class="container">
     <button class="mode-btn" onclick="toggleMode()">Switch Mode</button>
     <p id="modeLabel"><strong>Current Mode:</strong> Planning (Before Market)</p>
+
+    <div class="budget-input">
+      <label><strong>Enter Budget (₹):</strong></label>
+      <input type="number" id="budgetInput" placeholder="e.g. 2000" oninput="updateBudget()">
+    </div>
 
     <div id="addSection">
       <input type="text" id="itemName" placeholder="Item name">
@@ -82,12 +102,14 @@
 
     <div class="totals">
       <p id="totalAmount">Total Spent: ₹0</p>
+      <p id="remainingAmount">Remaining: ₹0</p>
     </div>
   </div>
 
   <script>
     let mode = "planning"; // "planning" or "shopping"
     let items = JSON.parse(localStorage.getItem("groceryItems")) || [];
+    let budget = Number(localStorage.getItem("budget")) || 0;
 
     function renderItems() {
       const tbody = document.getElementById("itemList");
@@ -103,7 +125,7 @@
             ${
               mode === "shopping"
                 ? `<input type="number" placeholder="Enter price" value="${item.price || ''}" onchange="updatePrice(${index}, this.value)">`
-                : "-"
+                : item.price || "-"
             }
           </td>
           <td><button onclick="deleteItem(${index})">❌</button></td>
@@ -111,7 +133,19 @@
         tbody.appendChild(row);
       });
 
+      const remaining = budget - total;
+
       document.getElementById("totalAmount").textContent = "Total Spent: ₹" + total;
+      const remainingEl = document.getElementById("remainingAmount");
+      remainingEl.textContent = "Remaining: ₹" + remaining;
+
+      // Show red if overspent
+      if (remaining < 0) {
+        remainingEl.className = "negative";
+      } else {
+        remainingEl.className = "positive";
+      }
+
       localStorage.setItem("groceryItems", JSON.stringify(items));
     }
 
@@ -139,6 +173,14 @@
       renderItems();
     }
 
+    function updateBudget() {
+      budget = Number(document.getElementById("budgetInput").value);
+      localStorage.setItem("budget", budget);
+      renderItems();
+    }
+
+    // Initialize UI
+    document.getElementById("budgetInput").value = budget;
     renderItems();
   </script>
 </body>
