@@ -6,11 +6,10 @@
   <title>Grocery Tracker</title>
   <style>
     :root {
-      /* 🌞 Light Theme */
       --bg: #f5f3f0;
       --card: #ffffff;
       --text: #2d2d2d;
-      --accent: #8b7ae8; /* Soft lavender */
+      --accent: #8b7ae8;
       --accent-hover: #7362d8;
       --border: #dcd7d2;
       --danger: #e57373;
@@ -19,11 +18,10 @@
     }
 
     [data-theme="dark"] {
-      /* 🌙 Dark Theme */
       --bg: #1d1f23;
       --card: #262a31;
       --text: #e6e6e6;
-      --accent: #4dd0e1; /* Soft teal */
+      --accent: #4dd0e1;
       --accent-hover: #26c6da;
       --border: #3a3d44;
       --danger: #ef9a9a;
@@ -44,7 +42,6 @@
       text-align: center;
       color: var(--accent-hover);
       font-weight: 600;
-      letter-spacing: 0.5px;
       margin-bottom: 25px;
     }
 
@@ -55,7 +52,6 @@
       padding: 25px;
       border-radius: 16px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-      transition: background 0.4s;
     }
 
     .top-controls {
@@ -63,6 +59,8 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     button {
@@ -71,7 +69,7 @@
       padding: 9px 14px;
       font-size: 0.95em;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: 0.3s;
     }
 
     .btn {
@@ -104,6 +102,8 @@
       background: var(--input-bg);
       color: var(--text);
       transition: 0.3s;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     input:focus {
@@ -151,6 +151,7 @@
       border-bottom: 1px solid var(--border);
       padding: 10px;
       text-align: center;
+      vertical-align: middle;
     }
 
     th {
@@ -159,11 +160,18 @@
       font-weight: 500;
     }
 
+    td input {
+      width: 90%;
+      min-width: 80px;
+      padding: 8px;
+      font-size: 0.95em;
+    }
+
     td button {
       background: var(--danger);
       color: white;
-      padding: 5px 8px;
-      border-radius: 5px;
+      padding: 6px 10px;
+      border-radius: 6px;
     }
 
     td button:hover {
@@ -191,10 +199,82 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .budget-box label {
       font-weight: 600;
+    }
+
+    /* 📱 Responsive Design */
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .container { padding: 15px; }
+      h1 { font-size: 1.6em; }
+
+      .search-bar {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #suggestions {
+        width: 100%;
+        top: 85px;
+      }
+
+      table, th, td { font-size: 0.9em; }
+      th, td { padding: 8px; }
+
+      td input {
+        width: 100%;
+        padding: 8px;
+        font-size: 1em;
+      }
+
+      td button {
+        padding: 8px 12px;
+        font-size: 0.95em;
+      }
+
+      th:nth-child(2), td:nth-child(2) { width: 35%; } /* Price column wider */
+      th:nth-child(3), td:nth-child(3) { width: 20%; } /* Action column wider */
+
+      .totals { text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 1.4em; }
+      button { font-size: 0.85em; padding: 8px 10px; }
+      input { font-size: 0.9em; }
+
+      .budget-box {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .top-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      td input {
+        width: 100%;
+        font-size: 1em;
+      }
+
+      td button {
+        width: 100%;
+        padding: 8px;
+      }
+
+      th:nth-child(2), td:nth-child(2) { width: 45%; } /* even larger price column */
+      th:nth-child(3), td:nth-child(3) { width: 25%; }
     }
   </style>
 </head>
